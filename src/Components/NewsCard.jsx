@@ -1,53 +1,68 @@
-import { useState } from "react";
-import { FaRegBookmark, FaRegShareSquare, FaStar } from "react-icons/fa";
+import { FaShareAlt, FaRegEye, FaRegBookmark } from "react-icons/fa";
+import { AiFillStar } from "react-icons/ai";
 
-const NewsCard = ({ news }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
+const NewsCard = (props = {}) => {
+  const { news } = props || {};
+
   return (
-    <div className="card bg-base-100 shadow-md border border-gray-200 p-4 mb-8">
-      <div className="flex justify-between items-center mb-3">
-        <div className="flex items-center gap-2">
-          <img
-            src={news.author.img}
-            alt={news.author.name}
-            className="w-10 h-10 rounded-full"
-          />
-          <div>
-            <h3 className="text-sm font-semibold">{news.author.name}</h3>
-            <p className="text-xs text-gray-500">
-              {news.author.published_date}
-            </p>
-          </div>
+    <div className=" p-4 bg-white rounded-lg shadow-md mb-8">
+      {/* Author Information */}
+      <div className="flex items-center mb-4">
+        <img
+          src={news.author.img}
+          alt={news.author.name}
+          className="w-10 h-10 rounded-full mr-3"
+        />
+        <div>
+          <p className="font-semibold">{news.author.name}</p>
+          <p className="text-sm text-gray-500">{news.author.published_date}</p>
         </div>
-        <div className="flex gap-2 text-gray-600">
+        <div className="ml-auto flex gap-2  text-gray-600 ">
           <FaRegBookmark className="cursor-pointer" />
-          <FaRegShareSquare className="cursor-pointer" />
+          <FaShareAlt className="cursor-pointer" />
         </div>
       </div>
-      <h2 className="font-bold text-lg">{news.title}</h2>
+
+      {/* Title */}
+      <h2 className="text-xl font-semibold mb-2">{news.title}</h2>
+
+      {/* Thumbnail Image */}
       <img
         src={news.image_url}
-        alt={news.title}
-        className="w-full h-56 object-cover rounded-md my-3"
+        alt="Thumbnail"
+        className="w-full  object-cover rounded-lg mb-4"
       />
-      <p className="text-sm text-gray-600">
-        {isExpanded ? news.details : `${news.details.substring(0, 500)}...`}
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="text-red-500 font-semibold cursor-pointer ml-1"
-        >
-          {isExpanded ? " Show Less" : " Read More"}
-        </button>
+
+      {/* Details */}
+      <p className="text-gray-700 text-sm mb-4">
+        {news.details.slice(0, 150)}...{" "}
+        <span className="text-primary">Read More</span>
       </p>
-      <div className="flex justify-between items-center mt-3">
-        <div className="flex items-center gap-1 text-yellow-500">
-          <FaStar />
-          <span className="font-semibold">{news.rating.number}</span>
+
+      {/* Ratings and Views */}
+      <div className="flex items-center justify-between text-gray-600 text-sm">
+        {/* Rating */}
+        <div className="flex items-center">
+          {[...Array(5)].map((_, i) => (
+            <AiFillStar
+              key={i}
+              className={`text-yellow-500 ${
+                i < Math.round(news.rating.number) ? "" : "opacity-50"
+              }`}
+            />
+          ))}
+          <span className="ml-2 font-semibold">{news.rating.number}</span>
         </div>
-        <span className="text-gray-600 text-sm">👁️ {news.total_view}</span>
+
+        {/* Views */}
+        <div className="flex items-center">
+          <FaRegEye className="mr-1" />
+          <span>{news.total_view}</span>
+        </div>
       </div>
     </div>
   );
 };
-
 export default NewsCard;
+
+
