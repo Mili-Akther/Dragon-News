@@ -1,9 +1,13 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 
 const Login = () => {
   const {userLogin, setUser} = useContext(AuthContext);
+  const [error,setError] = useState({})
+  const location = useLocation();
+  const navigate = useNavigate()
+  console.log(location);
   const handleSubmit = (e)=>{
     e.preventDefault();
     const form = e.target;
@@ -12,14 +16,16 @@ const Login = () => {
     console.log(email,password);
     userLogin(email,password).then((result)=>{
       const user = result.user;
-      setUser(user)
+      setUser(user);
+      navigate(location?.state?location.state:"/")
+      
     })
-    .catch((error) => {
-   alert(error.code)
+    .catch((err) => {
+   setError({...error, login:err.code})
   });
 
   }
-  return (  
+  return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-2xl rounded-lg p-10 w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center mb-4">
@@ -38,7 +44,7 @@ const Login = () => {
             />
           </div>
 
-          <div className="mb-6">
+          <div className="mb-3">
             <label className="block text-sm font-medium">Password</label>
             <input
               name="password"
@@ -47,6 +53,13 @@ const Login = () => {
               placeholder="Enter your password"
             />
           </div>
+          {error.login && <label className="label flex text-sm text-red-600">{error.login}</label>}
+
+          <label className="label">
+            <a href="#" className="label-text-alt link link-hover">
+              Forgot Password?
+            </a>
+          </label>
 
           <button className="w-full bg-black text-white py-3 rounded-md">
             Login
